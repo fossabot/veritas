@@ -1,0 +1,11 @@
+# Transcompiled library sources
+!libraries
+
+# Unit tests
+tests
+
+# Build configuration
+gulpfile.babel.js
+
+# Travis CI configuration
+.travis.yml

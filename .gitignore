@@ -1,0 +1,14 @@
+# Logs
+npm-debug.log*
+
+# Transcompiled library sources
+libraries
+
+# Dependency directory
+node_modules
+
+# GitHub Pages
+gh-pages
+
+# Coverage intermediate files
+.nyc_output
