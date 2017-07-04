@@ -77,7 +77,7 @@ Generic.enlarge({
              * {Function} Boundary.$
              * Allocate types and ready for construct.
              *
-             * @param {undefined|null|Constructor}... types
+             * @param ...{undefined|null|Constructor} types
              * @return {Constructor}
              **/
             static $(...args) {
