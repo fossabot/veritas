@@ -49,12 +49,12 @@ describe('Generic', () => {
     });
 
     it('should be unable to work without type parameters', () => {
-        should.throws(() => Reflect.construct(Container.$(123), []), TypeError);
+        should.throws(() => new (Container.$(123)), TypeError);
     });
 
     it('should be work fine with type parameters that are primitive types', () => {
         try {
-            throw Reflect.construct(Container.$(Number), [ 123 ]);
+            throw new (Container.$(Number))(123);
         } catch(numberContainer) {
             should.doesNotThrow(() => {
                 numberContainer.value = 456;
@@ -66,7 +66,7 @@ describe('Generic', () => {
         }
 
         try {
-            throw Reflect.construct(Container.$(String), [ 'alfa' ]);
+            throw new (Container.$(String))('alfa');
         } catch(stringContainer) {
             should.doesNotThrow(() => {
                 stringContainer.value = 'bravo';
@@ -78,7 +78,7 @@ describe('Generic', () => {
         }
 
         try {
-            throw Reflect.construct(Container.$(undefined), []);
+            throw new (Container.$(undefined));
         } catch(undefinedContainer) {
             should.doesNotThrow(() => {
                 undefinedContainer.value = undefined;
@@ -90,7 +90,7 @@ describe('Generic', () => {
         }
 
         try {
-            throw Reflect.construct(Container.$(null), []);
+            throw new (Container.$(null));
         } catch(nullContainer) {
             should.doesNotThrow(() => {
                 nullContainer.value = null;
@@ -104,22 +104,22 @@ describe('Generic', () => {
 
     it('should be work fine with type parameters that are generic types', () => {
         try {
-            throw Reflect.construct(Container.$(Container.$(Number)), []);
+            throw new (Container.$(Container.$(Number)));
         } catch(nestedContainer) {
             should.doesNotThrow(() => {
-                nestedContainer.value = Reflect.construct(Container.$(Number), [ 789 ]);
+                nestedContainer.value = new (Container.$(Number))(789);
             });
 
             should.throws(() => {
-                nestedContainer.value = Reflect.construct(Container.$(String), [ 'charlie' ]);
+                nestedContainer.value = new (Container.$(String))('charlie');
             }, TypeError);
         }
 
         try {
-            throw Reflect.construct(Container.$(Generic.$(1)), []);
+            throw new (Container.$(Generic.$(1)));
         } catch(genericContainer) {
             should.doesNotThrow(() => {
-                genericContainer.value = Reflect.construct(Container.$(String), [ 'delta' ]);
+                genericContainer.value = new (Container.$(String))('delta');
             });
 
             should.throws(() => {
@@ -156,7 +156,7 @@ describe('Generic', () => {
             }
         }
 
-        should.throws(() => Reflect.construct((SubContainer.$(Number)), []), TypeError);
-        should.doesNotThrow(() => Reflect.construct((SubContainer.$(Inherited)), []));
+        should.throws(() => new (SubContainer.$(Number)), TypeError);
+        should.doesNotThrow(() => new (SubContainer.$(Inherited)));
     });
 });
