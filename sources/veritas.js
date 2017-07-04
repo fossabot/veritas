@@ -1,6 +1,7 @@
 import './core';
 import './array';
 import './function';
+import './string';
 import './reflect';
 
 import Generic from './generic';

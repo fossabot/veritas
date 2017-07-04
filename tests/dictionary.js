@@ -4,12 +4,12 @@ describe('Dictionary', () => {
     let ordinalDictionary;
 
     it('should be able to construct with type parameters', () => {
-        should.doesNotThrow(() => ordinalDictionary = Reflect.construct(Dictionary.$(Number, String), []));
+        should.doesNotThrow(() => ordinalDictionary = new (Dictionary.$(Number, String)));
     });
 
     it('should be unable to construct without enough type parameters', () => {
-        should.throws(() => ordinalDictionary = Reflect.construct(Dictionary, []), TypeError);
-        should.throws(() => ordinalDictionary = Reflect.construct(Dictionary.$(Number), []), TypeError);
+        should.throws(() => ordinalDictionary = new Dictionary, TypeError);
+        should.throws(() => ordinalDictionary = new (Dictionary.$(Number)), TypeError);
     });
 
     it('should be both instance and implementation of generic collection', () => {

@@ -31,7 +31,7 @@ describe('Function', () => {
 
     it('should be able to repress a function', () => {
         const thrower = function thrower() {
-            throw Reflect.construct(Error, []);
+            throw new Error;
         };
 
         should.throws(() => thrower());
@@ -72,6 +72,13 @@ describe('Function', () => {
         getSum(123, 456).should.equal(579);
         getSum(123, 456, 789).should.equal(1368);
         getSum('').should.be.NaN();
+
+        const typelessAdd = Function.overload(overloader => {
+            overloader([ Number, String ], [ Number, String ], (alfa, bravo) => Number(alfa) + Number(bravo));
+        });
+
+        typelessAdd(123, '456').should.equal(579);
+        typelessAdd('123', 456).should.equal(579);
     });
 
     it('should be unable to overload functions if invalid conditition provided', () => {
@@ -95,6 +102,11 @@ describe('Function', () => {
         toDouble(123).should.equal(246);
         should.throws(() => toUpperCase(456), TypeError);
         should.throws(() => toDouble('def'), TypeError);
+
+        const typelessToDouble = Function.typeHint([ Number, String ], number => Number(number) * 2);
+
+        typelessToDouble(123).should.equal(246);
+        typelessToDouble('123').should.equal(246);
     });
 
     it('should be able to bind type constraints', () => {
