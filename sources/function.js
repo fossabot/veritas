@@ -41,6 +41,32 @@ Function.enlarge({
 
         const contexts = new Set;
 
+        const parameterValidate = function parameterValidate(parameter) {
+            if(parameter === undefined || parameter === null || parameter instanceof Function) {
+                return true;
+            }
+
+            if(Array.isArray(parameter)) {
+                return parameter.every(parameter => (
+                    parameter === undefined || parameter === null || parameter instanceof Function
+                ));
+            }
+
+            return false;
+        };
+
+        const parameterCompare = function parameterCompare(target, parameter) {
+            return target === parameter || !!parameter && (parameter !== Function && target instanceof parameter || parameter.isPrototypeOf(target));
+        }
+
+        /**
+         * {Function} Function.overload.overloader
+         * Registers overloaded function.
+         *
+         * @param ...{undefined|null|Function|Array<undefined, null, Function>} condition
+         * @param {Function} context
+         * @return {undefined}
+         **/
         const overloader = function overloader(...condition) {
             switch(condition.length) {
                 case 0:
@@ -53,7 +79,7 @@ Function.enlarge({
             const context = condition.pop();
 
             for(const parameter of condition) {
-                if(parameter === undefined || parameter === null || parameter instanceof Function) {
+                if(parameterValidate(parameter)) {
                     continue;
                 }
 
@@ -73,7 +99,7 @@ Function.enlarge({
                     if(condition.length !== args.length || !condition.every((parameter, index) => {
                         const target = args[index] === undefined || args[index] === null ? args[index] : args[index].constructor;
 
-                        return target === parameter || !!parameter && (parameter !== Function && target instanceof parameter || parameter.isPrototypeOf(target))
+                        return Array.isArray(parameter) ? parameter.some(parameter => parameterCompare(target, parameter)) : parameterCompare(target, parameter);
                     })) {
                         continue;
                     }
@@ -96,7 +122,7 @@ Function.enlarge({
      * {Function} Function.typeHint
      * Provides type hinting.
      *
-     * @param {undefined|null|Constructor}... types
+     * @param ...{undefined|null|Constructor} types
      * @return {Function}
      **/
     typeHint(...types) {
@@ -108,6 +134,10 @@ Function.enlarge({
 
         const contextName = context.name || 'anonymous';
 
+        const typeCompare = function typeCompare(target, type) {
+            return target === type || !!type && (type !== Function && target instanceof type || type.isPrototypeOf(target));
+        }
+
         const typeHinted = function typeHinted(...args) {
             if(args.length < types.length) {
                 throw new TypeError(`${contextName} requires ${types.length} type${types.length > 1 ? 's' : ''} at least`);
@@ -116,23 +146,23 @@ Function.enlarge({
             for(const [ index, argument ] of args.slice(0, types.length).map((argument, index) => [ index, argument ])) {
                 const target = argument === undefined || argument === null ? argument : argument.constructor;
 
-                if(target === types[index] || !!types[index] && (types[index] !== Function && target instanceof types[index] || types[index].isPrototypeOf(target))) {
+                if(Array.isArray(types[index]) ? types[index].some(type => typeCompare(target, type)) : typeCompare(target, types[index])) {
                     continue;
                 }
 
                 const ordinalIndex = (index + 1) + (index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th');
 
-                throw new TypeError(`Type which ${ordinalIndex} argument of ${contextName} should be ${types[index].name}`);
+                throw new TypeError(`Type which ${ordinalIndex} argument of ${contextName} should be ${Array.isArray(types[index]) ? (
+                    types[index].map(type => (type === undefined ? 'undefined' : type === null ? 'null' : type.name)).join(' or ')
+                ) : (
+                    types[index] === undefined ? 'undefined' : types[index] === null ? 'null' : types[index].name
+                )}`);
             }
 
             return Reflect[new.target ? 'construct' : 'apply'](context, ...(new.target ? [ args ] : [ this, args ]));
         };
 
-        const nameDescriptor = Reflect.getOwnPropertyDescriptor(typeHinted, 'name');
-
-        nameDescriptor.value = contextName;
-
-        Reflect.defineProperty(typeHinted, 'name', nameDescriptor);
+        Reflect.defineProperty(typeHinted, 'name', Object.assign(Reflect.getOwnPropertyDescriptor(typeHinted, 'name'), { value: contextName }));
 
         return typeHinted;
     },
@@ -142,7 +172,7 @@ Function.enlarge({
      * {Function} Function.typeBind
      * Provides type binding.
      *
-     * @param {undefined|null|Constructor}... types
+     * @param ...{undefined|null|Constructor} types
      * @return {Function}
      **/
     typeBind(...types) {
@@ -168,11 +198,7 @@ Function.enlarge({
             return Reflect[new.target ? 'construct' : 'apply'](context, ...(new.target ? [ mappedArgs ] : [ this, mappedArgs ]));
         };
 
-        const nameDescriptor = Reflect.getOwnPropertyDescriptor(typeBound, 'name');
-
-        nameDescriptor.value = contextName;
-
-        Reflect.defineProperty(typeBound, 'name', nameDescriptor);
+        Reflect.defineProperty(typeBound, 'name', Object.assign(Reflect.getOwnPropertyDescriptor(typeBound, 'name'), { value: contextName }));
 
         return typeBound;
     }
