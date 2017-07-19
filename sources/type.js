@@ -21,6 +21,30 @@ export default class Type extends Generic.$(1) {
         }
 
         types.set(key, this);
+
+        this.enlarge({
+            is: Function.overload(overloader => {
+                /**
+                 * {Function} Type.prototype.is
+                 * Evaluates equality between type of the target and the given type.
+                 *
+                 * @param {undefined|null|Constructor} type
+                 * @return {Boolean}
+                 **/
+                overloader([ undefined, null, Function ], type => (
+                    $[0] === type || !!type && (type !== Function && $[0] instanceof type || type.isPrototypeOf($[0]))
+                ));
+
+                /**
+                 * {Function} Type.prototype.is
+                 * Evaluates to exist type of the target in the given array.
+                 *
+                 * @param {Array<undefined|null|Constructor>} types
+                 * @return {Boolean}
+                 **/
+                overloader(Array, types => types.some(type => this.is(type)));
+            })
+        });
     }
 
     /**
@@ -38,19 +62,6 @@ export default class Type extends Generic.$(1) {
             return types.get(key);
         }
 
-        return new (this.$(constructor))();
-    }
-
-    /**
-     * {Function} Type.prototype.is
-     * Evaluates equality between type of the target and given type.
-     *
-     * @param {undefined|null|Constructor} type
-     * @return {Boolean}
-     **/
-    is(type) {
-        const [ target ] = this.$;
-
-        return target === type || !!type && (type !== Function && target instanceof type || type.isPrototypeOf(target));
+        return new (Type.$(constructor))();
     }
 }
