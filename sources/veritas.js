@@ -1,16 +1,31 @@
+// Veritas infracore.
 import './core';
-import './array';
+
+// Extension of standard built-in objects.
 import './function';
+import './array';
+import './number';
 import './string';
 import './reflect';
 
+// Advanced numeric calculation system.
+import Rational from './rational';
+import Complex from './complex';
+import Matrix from './matrix';
+import Calculator from './calculator';
+
+// Generic programming extension and applied instances.
 import Generic from './generic';
-export { Generic };
-
 import Type from './type';
-export { Type };
-
 import Dictionary from './dictionary';
-export { Dictionary };
 
-global.enlarge({ Generic, Type, Dictionary });
+// Export and expose object defined by Veritas to global namespace.
+export {
+    Calculator, Rational, Complex, Matrix,
+    Generic, Type, Dictionary
+};
+
+global.enlarge({
+    Calculator, Rational, Complex, Matrix,
+    Generic, Type, Dictionary
+});
