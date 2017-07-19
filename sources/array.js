@@ -8,7 +8,7 @@ Array.enlarge({
      * @return {Array}
      **/
     allocate(length, mapFunction = element => element, thisArgument) {
-        if(!(mapFunction === undefined || mapFunction instanceof Function)) {
+        if(arguments.length > 1 && !(mapFunction instanceof Function)) {
             throw new TypeError(`${mapFunction} is not a function`);
         }
 

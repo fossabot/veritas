@@ -48,10 +48,12 @@ describe('Function', () => {
         const convert = Function.overload(overloader => {
             overloader(Number, number => String(number));
             overloader(String, string => Number(string));
+            overloader(() => NaN);
         });
 
         convert('123').should.equal(123);
         convert(123).should.equal('123');
+        convert(undefined).should.NaN();
 
         const add = Function.overload(overloader => {
             overloader(Number, String, (alfa, bravo) => alfa + Number(bravo));

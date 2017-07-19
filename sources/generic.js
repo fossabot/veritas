@@ -4,9 +4,8 @@ const { Map, Set, Symbol } = global;
 const any = [ undefined, null, Function ];
 const generics = new Map;
 const containers = new Set;
-const Generic = {};
 
-Generic.enlarge({
+const Generic = {
     /**
      * {Function} Generic.$
      * Generates boundary of generic.
@@ -148,6 +147,6 @@ Generic.enlarge({
 
         return Boundary;
     }
-});
+};
 
 export default Generic;
