@@ -3,6 +3,10 @@ const identities = new WeakMap;
 const undefinedIdentity = Symbol(undefined);
 const nullIdentity = Symbol(null);
 
+const typeCompare = (target, type) => (
+    target === type || !!type && (type !== Function && target instanceof type || type.isPrototypeOf(target))
+);
+
 Function.enlarge({
     /**
      * {Function} Function.getOwnIdentity
@@ -55,10 +59,6 @@ Function.enlarge({
             return false;
         };
 
-        const parameterCompare = function parameterCompare(target, parameter) {
-            return target === parameter || !!parameter && (parameter !== Function && target instanceof parameter || parameter.isPrototypeOf(target));
-        }
-
         /**
          * {Function} Function.overload.overloader
          * Registers overloaded function.
@@ -99,7 +99,7 @@ Function.enlarge({
                     if(condition.length !== args.length || !condition.every((parameter, index) => {
                         const target = args[index] === undefined || args[index] === null ? args[index] : args[index].constructor;
 
-                        return Array.isArray(parameter) ? parameter.some(parameter => parameterCompare(target, parameter)) : parameterCompare(target, parameter);
+                        return Array.isArray(parameter) ? parameter.some(type => typeCompare(target, type)) : typeCompare(target, parameter);
                     })) {
                         continue;
                     }
@@ -133,10 +133,6 @@ Function.enlarge({
         }
 
         const contextName = context.name || 'anonymous';
-
-        const typeCompare = function typeCompare(target, type) {
-            return target === type || !!type && (type !== Function && target instanceof type || type.isPrototypeOf(target));
-        }
 
         const typeHinted = function typeHinted(...args) {
             if(args.length < types.length) {

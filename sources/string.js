@@ -8,10 +8,10 @@ String.enhance({
      * @return {String}
      **/
     replaceAll: Function.typeHint([ String, RegExp ], [ String, Function ], function replaceAll(search, replacement) {
-        let string = this;
+        let [ string, replaced ] = [ this, this.replace(search, replacement) ];
 
-        while(search instanceof RegExp && search.test(string) || search.constructor === String && string.includes(search)) {
-            string = string.replace(search, replacement);
+        while(string !== replaced) {
+            [ string, replaced ] = [ replaced, replaced.replace(search, replacement) ];
         }
 
         return string;
