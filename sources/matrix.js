@@ -128,7 +128,7 @@ export default class Matrix {
 
                     return new Matrix(data);
                 });
-            }),
+            })
         });
 
         // Makes this instance to immutable.
