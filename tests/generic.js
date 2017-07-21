@@ -1,3 +1,6 @@
+/* eslint-env mocha */
+/* global Generic Type */
+
 import should from 'should';
 
 describe('Generic', () => {
@@ -42,7 +45,7 @@ describe('Generic', () => {
 
     it('should be unable to work without positive type counts', () => {
         should.throws(() => {
-            class InvalidContainer extends Generic.$(-1) {
+            new class InvalidContainer extends Generic.$(-1) {
 
             }
         }, RangeError);
@@ -135,7 +138,7 @@ describe('Generic', () => {
 
     it('should be work fine with type constraints', () => {
         should.throws(() => {
-            class SubContainer extends Generic.$(1, { 0: 1 }) {
+            new class SubContainer extends Generic.$(1, { 0: 1 }) {
                 constructor() {
                     super([], {});
                 }
