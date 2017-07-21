@@ -9,5 +9,5 @@ before_install:
 before_script:
   - npm install --global gulp mocha nyc coveralls
 
-after_success:
+script:
   - npm run coveralls
