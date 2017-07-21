@@ -228,6 +228,6 @@ export default class Rational {
      * @return {String}
      **/
     get sign() {
-        return 1 / this < 0 ? '-' : '+';
+        return (this || 1 / this) < 0 ? '-' : '+';
     }
 }
