@@ -17,16 +17,18 @@ export default class Complex {
     constructor(real = 0, imaginary = 0) {
         const [ realType, imaginaryType ] = [ real, imaginary ].map(Type.of);
 
-        if(!(realType.is(Number) || realType.is(Rational))) {
+        if(!realType.is([ Number, Rational ])) {
             throw new TypeError(`Type of real part ${real} is not a number`);
         }
 
-        if(!(imaginaryType.is(Number) || imaginaryType.is(Rational))) {
+        if(!imaginaryType.is([ Number, Rational ])) {
             throw new TypeError(`Type of imaginary part ${imaginary} is not a number`);
         }
 
-        this.real = realType.is(Number) ? Rational.from(real) : real;
-        this.imaginary = imaginaryType.is(Number) ? Rational.from(imaginary) : imaginary;
+        [ this.real, this.imaginary ] = [
+            realType.is(Number) ? Rational.from(real) : real,
+            imaginaryType.is(Number) ? Rational.from(imaginary) : imaginary
+        ]
 
         // Defines arithmetic calculation.
         this.enlarge({
