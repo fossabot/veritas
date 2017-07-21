@@ -28,7 +28,9 @@ describe('Complex', () => {
     it('should be immutable', () => {
         const complex = new Complex(1, 0);
 
-        [ complex.real, complex.imaginary ] = [ 2, 1 ];
+        should.throws(() => {
+            [ complex.real, complex.imaginary ] = [ 2, 1 ];
+        }, TypeError);
 
         String(complex).should.equal('1 + 0i');
     });

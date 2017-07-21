@@ -13,14 +13,16 @@ describe('Rational', () => {
     it('should be able to accept finite number', () => {
         should.throws(() => new Rational('0', 1), TypeError);
         should.throws(() => new Rational(0, '1'), TypeError);
-        should.throws(() => new Rational(Infinity, 1), TypeError);
-        should.throws(() => new Rational(0, Infinity), TypeError);
+        should.throws(() => new Rational(Infinity, 1), RangeError);
+        should.throws(() => new Rational(0, Infinity), RangeError);
     });
 
     it('should be immutable', () => {
         const rational = new Rational(1, 10);
 
-        [ rational.dividend, rational.divisor ] = [ 2, 5 ];
+        should.throws(() => {
+            [ rational.dividend, rational.divisor ] = [ 2, 5 ];
+        }, TypeError);
 
         Number(rational).should.equal(0.1);
     });
@@ -30,6 +32,6 @@ describe('Rational', () => {
 
         Number(Rational.from(number)).should.equal(number);
         Rational.from(rational).should.equal(rational);
-        should.throws(() => Rational.from(Infinity), TypeError);
+        should.throws(() => Rational.from(Infinity), RangeError);
     });
 });

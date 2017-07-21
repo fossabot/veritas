@@ -194,7 +194,7 @@ export default class Rational {
             throw new RangeError(`${number} is not finite number`);
         }
 
-        const [ fraction, inverse ] = [ number, 1 / number ].map(fractionize);
+        const [ fraction, inverse ] = [ number, number && 1 / number ].map(fractionize);
         const [ fractionDigits, inverseDigits ] = [ fraction, inverse ].map(({ dividend, divisor }) => dividend + divisor);
         const { dividend, divisor } = fractionDigits > inverseDigits ? { dividend: inverse.divisor, divisor: inverse.dividend } : fraction;
 
@@ -228,6 +228,6 @@ export default class Rational {
      * @return {String}
      **/
     get sign() {
-        return (this || 1 / this) < 0 ? '-' : '+';
+        return (+this || 1 / this) < 0 ? '-' : '+';
     }
 }
