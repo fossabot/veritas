@@ -3,6 +3,7 @@ import './core';
 
 // Extension of standard built-in objects.
 import './function';
+import './object';
 import './array';
 import './number';
 import './string';
