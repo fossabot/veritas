@@ -35,6 +35,15 @@ describe('Complex', () => {
         String(complex).should.equal('1 + 0i');
     });
 
+    it('should be able to make a complex from real number object', () => {
+        const [ number, complex ] = [ 1, new Complex(1, 0) ];
+
+        String(Complex.from(number)).should.equal('1 + 0i');
+        Complex.from(complex).should.equal(complex);
+        should.throws(() => Complex.from('Hello'), SyntaxError);
+        should.throws(() => Complex.from(Infinity), RangeError);
+    });
+
     it('should be able to make conjugate complex number', () => {
         const complex = new Complex(1, 1);
         const conjugate = complex.conjugate;
