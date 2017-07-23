@@ -1,6 +1,6 @@
 {
     "name": "veritas",
-    "version": "0.7.0",
+    "version": "0.7.1",
     "description": "The extension library for pragmatists with elegance.",
     "keywords": [
         "extension",
@@ -29,12 +29,11 @@
     "scripts": {
         "prebuild": "rm -rf libraries",
         "build": "gulp build",
-        "test": "mocha -r source-map-support/register -r sources/veritas -r should --compilers js:babel-register tests",
-        "debug": "node -r babel-register -r ./sources/veritas",
-        "prepages": "if [ ! -d 'gh-pages' ]; then git clone --branch gh-pages ./ gh-pages; fi",
+        "prepages": "if [ ! -d 'gh-pages' ]; then git clone --branch gh-pages ./gh-pages; fi",
         "pages": "gulp pages",
-        "precoveralls": "nyc -x gulpfile.babel.js -x tests npm test",
-        "coveralls": "nyc report -r text-lcov | coveralls"
+        "test": "nyc -x gulpfile.babel.js -x tests mocha -r ./sources/veritas --compilers js:babel-register tests",
+        "coveralls": "nyc report -r text-lcov | coveralls",
+        "debug": "node -r babel-register -r ./sources/veritas",
     },
     "dependencies": {
         "babel-runtime": "^6.23.0"
@@ -55,7 +54,6 @@
         "gulp-sourcemaps": "^2.6.0",
         "mocha": "^3.4.2",
         "should": "^11.2.1",
-        "source-map-support": "^0.4.15",
         "vinyl-named": "^1.1.0",
         "webpack-stream": "^3.2.0"
     },
