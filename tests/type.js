@@ -1,3 +1,6 @@
+/* eslint-env mocha */
+/* global Type */
+
 import should from 'should';
 
 const GeneratorFunction = (function *() {}).constructor;

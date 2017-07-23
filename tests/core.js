@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 import should from 'should';
 
 describe('Core', () => {

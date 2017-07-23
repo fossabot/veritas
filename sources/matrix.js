@@ -118,8 +118,8 @@ export default class Matrix {
 
                     const data = Array.allocate(this.rows, () => Array.allocate(this.columns, () => null));
 
-                    for(let rowIndex; rowIndex < this.rows; rowIndex++) {
-                        for(let columnIndex; columnIndex < this.columnIndex; columnIndex++) {
+                    for(let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
+                        for(let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
                             data[rowIndex][columnIndex] = Array.allocate(this.rows, (element, index) => index).reduce((current, next) => (
                                 this.element(rowIndex, next).multiply(matrix.element(next, columnIndex)).add(current)
                             ), 0);
@@ -128,7 +128,7 @@ export default class Matrix {
 
                     return new Matrix(data);
                 });
-            }),
+            })
         });
 
         // Makes this instance to immutable.

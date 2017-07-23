@@ -1,3 +1,7 @@
+/* eslint-env mocha */
+
+import 'should';
+
 describe('Reflect', () => {
     it('should be able to get property descriptor inherited by parent', () => {
         Reflect.getItsPropertyDescriptor([], 'valueOf').should.deepEqual(Reflect.getOwnPropertyDescriptor(Object.prototype, 'valueOf'));

@@ -1,4 +1,6 @@
-import should from 'should';
+/* eslint-env mocha */
+
+import 'should';
 
 describe('String', () => {
     it('should be able to replace all target', () => {

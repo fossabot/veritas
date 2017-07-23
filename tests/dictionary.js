@@ -1,3 +1,6 @@
+/* eslint-env mocha */
+/* global Generic Dictionary Type */
+
 import should from 'should';
 
 describe('Dictionary', () => {
