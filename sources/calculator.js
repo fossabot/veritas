@@ -95,27 +95,51 @@ const Calculator = {
         return (1).divide(Calculator.tan(number));
     },
 
-    /**
-     * {Function} Calculator.sinh
-     * Calculates hyperbolic sine value of the number.
-     *
-     * @param {Number|Rational|Complex}
-     * @return {Rational|Complex}
-     **/
-    sinh(number) {
-        return Calculator.exp(number).subtract(Calculator.exp(number.multiply(-1))).divide(2);
-    },
+    sinh: Function.overload(overloader => {
+        /**
+         * {Function} Calculator.sinh
+         * Calculates hyperbolic sine value of the real number.
+         *
+         * @param {Number|Rational}
+         * @return {Number}
+         **/
+        overloader(Real, number => Math.sinh(number));
 
-    /**
-     * {Function} Calculator.cosh
-     * Calculates hyperbolic cosine value of the number.
-     *
-     * @param {Number|Rational|Complex}
-     * @return {Rational|Complex}
-     **/
-    cosh(number) {
-        return Calculator.exp(number).add(Calculator.exp(number.multiply(-1))).divide(2);
-    },
+        /**
+         * {Function} Calculator.sinh
+         * Calculates hyperbolic sine value of the complex number.
+         *
+         * @param {Complex} complex
+         * @return {Complex}
+         **/
+        overloader(Complex, ({ real, imaginary }) => new Complex(
+            Calculator.sinh(real).multiply(Calculator.cos(imaginary)),
+            Calculator.cosh(real).multiply(Calculator.sin(imaginary))
+        ));
+    }),
+
+    cosh: Function.overload(overloader => {
+        /**
+         * {Function} Calculator.cosh
+         * Calculates hyperbolic cosine value of the real number.
+         *
+         * @param {Number|Rational}
+         * @return {Number}
+         **/
+        overloader(Real, number => Math.cosh(number));
+
+        /**
+         * {Function} Calculator.cosh
+         * Calculates hyperbolic cosine value of the complex number.
+         *
+         * @param {Complex} complex
+         * @return {Complex}
+         **/
+        overloader(Complex, ({ real, imaginary }) => new Complex(
+            Calculator.cosh(real).multiply(Calculator.cos(imaginary)),
+            Calculator.sinh(real).multiply(Calculator.sin(imaginary))
+        ));
+    }),
 
     /**
      * {Function} Calculator.tanh
@@ -209,7 +233,6 @@ const Calculator = {
         ));
     }),
 
-
     pow(alpha, beta) {
         if([ alpha, beta ].every(target => Type.of(target).is(Real))) {
             return Math.pow(alpha, beta);
@@ -295,12 +318,12 @@ const Calculator = {
          * Calculates absolute value of the complex number.
          *
          * @param {Complex} complex
-         * @return {Complex}
+         * @return {Number}
          **/
         overloader(Complex, ({ real, imaginary }) => (
             Calculator.sqrt(real.multiply(real).add(imaginary.multiply(imaginary)))
         ));
-    }),
+    })
 };
 
 export default Calculator;
