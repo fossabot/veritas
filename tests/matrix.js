@@ -66,7 +66,7 @@ describe('Matrix', () => {
             inverse.element(...path)
         )).map(element => (
             Number(element)
-        )).should.deepEqual([ -2, 1.5, 1, -0.5 ]);
+        )).should.deepEqual([ -2, 1, 1.5, -0.5 ]);
     });
 
     it('should be able to make identity matrix', () => {

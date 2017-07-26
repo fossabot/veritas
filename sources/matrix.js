@@ -3,6 +3,7 @@ import Complex from './complex';
 import Type from './type';
 
 const Numeric = [ Number, Rational, Complex ];
+const initializeData = (rows, columns) => Array.allocate(rows, () => Array.allocate(columns, () => null));
 
 export default class Matrix {
     /**
@@ -44,12 +45,11 @@ export default class Matrix {
                  * @return {Matrix}
                  **/
                 overloader(Numeric, number => {
-                    const data = Array.allocate(this.rows, () => Array.allocate(this.columns, () => null));
+                    const { rows, columns } = this;
+                    const data = initializeData(rows, columns);
 
-                    for(let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
-                        for(let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
-                            data[columnIndex][rowIndex] = this.element(rowIndex, columnIndex).add(number);
-                        }
+                    for(const [ row, column ] of Array.dimentional(rows, columns)) {
+                        data[row][column] = this.element(row, column).add(number);
                     }
 
                     return new Matrix(data);
@@ -63,12 +63,11 @@ export default class Matrix {
                  * @return {Matrix}
                  **/
                 overloader(Matrix, matrix => {
-                    const data = Array.allocate(this.rows, () => Array.allocate(this.columns, () => null));
+                    const { rows, columns } = this;
+                    const data = initializeData(rows, columns);
 
-                    for(let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
-                        for(let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
-                            data[columnIndex][rowIndex] = this.element(rowIndex, columnIndex).add(matrix.element(rowIndex, columnIndex));
-                        }
+                    for(const [ row, column ] of Array.dimentional(rows, columns)) {
+                        data[row][column] = this.element(row, column).add(matrix.element(row, column));
                     }
 
                     return new Matrix(data);
@@ -93,12 +92,11 @@ export default class Matrix {
                  * @return {Matrix}
                  **/
                 overloader(Numeric, number => {
-                    const data = Array.allocate(this.rows, () => Array.allocate(this.columns, () => null));
+                    const { rows, columns } = this;
+                    const data = initializeData(rows, columns);
 
-                    for(let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
-                        for(let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
-                            data[columnIndex][rowIndex] = this.element(rowIndex, columnIndex).multiply(number);
-                        }
+                    for(const [ row, column ] of Array.dimentional(rows, columns)) {
+                        data[row][column] = this.element(row, column).multiply(number);
                     }
 
                     return new Matrix(data);
@@ -112,18 +110,18 @@ export default class Matrix {
                  * @return {Matrix}
                  **/
                 overloader(Matrix, matrix => {
-                    if(this.columns !== matrix.rows) {
+                    const { rows, columns } = this;
+
+                    if(columns !== matrix.rows) {
                         throw new RangeError('Rows size of the matrix is not the same with column size of provided matrix');
                     }
 
-                    const data = Array.allocate(this.rows, () => Array.allocate(this.columns, () => null));
+                    const data = initializeData(rows, columns);
 
-                    for(let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
-                        for(let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
-                            data[rowIndex][columnIndex] = Array.allocate(this.rows, (element, index) => index).reduce((current, next) => (
-                                this.element(rowIndex, next).multiply(matrix.element(next, columnIndex)).add(current)
-                            ), 0);
-                        }
+                    for(const [ row, column ] of Array.dimentional(rows, columns)) {
+                        data[row][column] = [ ...Array.range(rows) ].reduce((current, next) => (
+                            this.element(row, next).multiply(matrix.element(next, column)).add(current)
+                        ), 0);
                     }
 
                     return new Matrix(data);
@@ -174,12 +172,11 @@ export default class Matrix {
      * @return {Matrix}
      **/
     get transposed() {
-        const data = Array.allocate(this.columns, () => Array.allocate(this.rows, () => null));
+        const { rows, columns } = this;
+        const data = initializeData(columns, rows);
 
-        for(let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
-            for(let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
-                data[columnIndex][rowIndex] = this.element(rowIndex, columnIndex);
-            }
+        for(const [ row, column ] of Array.dimentional(rows, columns)) {
+            data[column][row] = this.element(row, column);
         }
 
         return new Matrix(data);
@@ -192,19 +189,19 @@ export default class Matrix {
      * @return {Matrix}
      **/
     get adjugate() {
-        if(this.rows !== this.columns) {
+        const { rows, columns } = this;
+
+        if(rows !== columns) {
             throw new TypeError('The matrix is not square form');
         }
 
-        const data = Array.allocate(this.rows, () => Array.allocate(this.columns, () => null));
+        const data = initializeData(rows, columns);
 
-        for(let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
-            for(let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
-                data[rowIndex][columnIndex] = this.cofactor(rowIndex, columnIndex);
-            }
+        for(const [ row, column ] of Array.dimentional(rows, columns)) {
+            data[column][row] = this.cofactor(row, column);
         }
 
-        return new Matrix(data).transposed;
+        return new Matrix(data);
     }
 
     /**
@@ -214,11 +211,13 @@ export default class Matrix {
      * @return {Number}
      **/
     get trace() {
-        if(this.rows !== this.columns) {
+        const { rows, columns } = this;
+
+        if(rows !== columns) {
             throw new TypeError('The matrix is not square form');
         }
 
-        return this.data.map((row, index) => row[index]).reduce((current, next) => current + next, 0);
+        return this.data.map((row, index) => row[index]).sum;
     }
 
     /**
@@ -228,11 +227,13 @@ export default class Matrix {
      * @return {Number}
      **/
     get determinant() {
-        if(this.rows !== this.columns) {
+        const { rows, columns } = this;
+
+        if(rows !== columns) {
             throw new TypeError('The matrix is not square form');
         }
 
-        switch(this.rows) {
+        switch(rows) {
             case 1:
                 return this.element(0, 0);
 
@@ -240,7 +241,7 @@ export default class Matrix {
                 return this.element(0, 0).multiply(this.element(1, 1)).subtract(this.element(0, 1).multiply(this.element(1, 0)));
         }
 
-        return Array.allocate(this.rows, (element, index) => index).reduce((current, next) => (
+        return [ ...Array.range(rows) ].reduce((current, next) => (
             current.add(this.element(0, next).multiply(this.cofactor(0, next)))
         ), 0);
     }
@@ -254,7 +255,9 @@ export default class Matrix {
      * @return {Number}
      **/
     cofactor(row, column) {
-        if(this.rows !== this.columns) {
+        const { rows, columns } = this;
+
+        if(rows !== columns) {
             throw new TypeError('The matrix is not square form');
         }
 
@@ -270,24 +273,20 @@ export default class Matrix {
      * @return {Number}
      **/
     minor(row, column) {
-        if(this.rows !== this.columns) {
+        const { rows, columns } = this;
+
+        if(rows !== columns) {
             throw new TypeError('The matrix is not square form');
         }
 
-        const data = Array.allocate(this.rows - 1, () => Array.allocate(this.columns - 1, () => null));
+        const data = initializeData(rows - 1, columns - 1);
 
-        for(let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
-            if(rowIndex === row) {
+        for(const [ rowIndex, columnIndex ] of Array.dimentional(rows, columns)) {
+            if(rowIndex === row || columnIndex === column) {
                 continue;
             }
 
-            for(let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
-                if(columnIndex === column) {
-                    continue;
-                }
-
-                data[rowIndex > row ? rowIndex - 1 : rowIndex][columnIndex > column ? columnIndex - 1 : columnIndex] = this.element(rowIndex, columnIndex);
-            }
+            data[rowIndex - (rowIndex > row ? 1 : 0)][columnIndex - (columnIndex > column ? 1 : 0)] = this.element(rowIndex, columnIndex);
         }
 
         return new Matrix(data).determinant;
@@ -300,11 +299,11 @@ export default class Matrix {
      * @return {Matrix}
      **/
     get inverse() {
-        if(this.rows !== this.columns) {
+        const { rows, columns, determinant } = this;
+
+        if(rows !== columns) {
             throw new TypeError('The matrix is not square form');
         }
-
-        const { determinant } = this;
 
         if(!determinant) {
             throw new RangeError('Determinant of the matrix is equals to 0');

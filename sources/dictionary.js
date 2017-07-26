@@ -91,7 +91,7 @@ export default class Dictionary extends Generic.$(2) {
     }
 
     /**
-     * {Function} Dictionary.prototype.entries
+     * {Generator} Dictionary.prototype.entries
      * Returns a new Iterator object that contains the [key, value] pairs for each element in the Dictionary object in insertion order.
      *
      * @return {Iterator}
