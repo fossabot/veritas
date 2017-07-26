@@ -227,7 +227,7 @@ const Calculator = {
          * @param {Complex} complex
          * @return {Complex}
          **/
-        overloader(Complex, complex => !(complex.real + complex.imaginary) ? -Infinity : new Complex(
+        overloader(Complex, complex => !(complex.real * complex.imaginary) ? -Infinity : new Complex(
             Calculator.log(Calculator.abs(complex)),
             Math.atan2(complex.imaginary, complex.real)
         ));

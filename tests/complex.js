@@ -40,8 +40,18 @@ describe('Complex', () => {
 
         String(Complex.from(number)).should.equal('1 + 0i');
         Complex.from(complex).should.equal(complex);
-        should.throws(() => Complex.from('Hello'), SyntaxError);
         should.throws(() => Complex.from(Infinity), RangeError);
+    });
+
+    it('should be able to make a complex from valid string expression', () => {
+        String(Complex.from('1 + 0i')).should.equal('1 + 0i');
+        String(Complex.from('1 - 0i')).should.equal('1 - 0i');
+        should.throws(() => Complex.from('Hello'), SyntaxError);
+    });
+
+    it('should be able to make string from complex number object', () => {
+        String(Complex.from('1 + 0i')).should.equal(Complex.from('1 + 0i').valueOf());
+        String(Complex.from('1 + 0i')).should.equal(Complex.from('1 + 0i').toString());
     });
 
     it('should be able to make conjugate complex number', () => {

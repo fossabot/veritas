@@ -159,6 +159,11 @@ describe('Calculator', () => {
     describe('should be able to calculate value of natural logarithm function', () => {
         it('about the real number', () => {
             roughlyCheck(Calculator.log(random), Math.log(random));
+
+            const { real, imaginary } = Calculator.log(-random);
+
+            roughlyCheck(real, Math.log(random));
+            roughlyCheck(imaginary, Math.PI);
         });
 
         it('about the complex number', () => {
@@ -166,6 +171,7 @@ describe('Calculator', () => {
 
             roughlyCheck(real, Math.log(Math.sqrt(2 * random * random))).should.ok();
             roughlyCheck(imaginary, Math.atan2(random, random)).should.ok();
+            (Calculator.log(new Complex(0, 0)) === -Infinity).should.ok();
         });
     });
 

@@ -75,7 +75,7 @@ export default class Matrix {
             }),
 
             /**
-             * {Function} Matrix.prototype.add
+             * {Function} Matrix.prototype.subtract
              * Executes subtraction calculation.
              *
              * @param {Number|Rational|Complex|Matrix} target
@@ -85,7 +85,7 @@ export default class Matrix {
 
             multiply: Function.overload(overloader => {
                 /**
-                 * {Function} Matrix.prototype.add
+                 * {Function} Matrix.prototype.multiply
                  * Executes multiplication calculation with a number.
                  *
                  * @param {Number|Rational|Complex} number
@@ -103,7 +103,7 @@ export default class Matrix {
                 });
 
                 /**
-                 * {Function} Matrix.prototype.add
+                 * {Function} Matrix.prototype.multiply
                  * Executes multiplication calculation with a matrix.
                  *
                  * @param {Matrix} number
@@ -305,7 +305,7 @@ export default class Matrix {
             throw new TypeError('The matrix is not square form');
         }
 
-        if(!determinant) {
+        if(!Number(determinant)) {
             throw new RangeError('Determinant of the matrix is equals to 0');
         }
 
