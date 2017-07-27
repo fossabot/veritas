@@ -1,27 +1,21 @@
-/* eslint-env mocha */
+import test from 'ava';
 
-import 'should';
+test('able to take a sign of the number', $ => {
+    $.deepEqual([ 0, -0, Infinity, -Infinity, NaN ].map(element => element.sign), [ '+', '-', '+', '-', '+' ]);
+});
 
-describe('Number', () => {
-    it('should be able to take a sign of the number', () => {
-        [ 0, -0, Infinity, -Infinity, NaN ].map(element => element.sign).should.deepEqual([
-            '+', '-', '+', '-', '+'
-        ]);
-    });
+test('able to provides arithmetic calculation features', $ => {
+    const [ alpha, beta, gamma ] = [ 0.1, 0.2, 0.3 ];
 
-    it('should be able to provides arithmetic calculation features', () => {
-        const [ alpha, beta, gamma ] = [ 0.1, 0.2, 0.3 ];
+    // 0.1 + 0.2 = 0.30000000000000004 in IEEE 754 Floting point system
+    $.is(Number(alpha.add(beta)), gamma);
 
-        // 0.1 + 0.2 = 0.30000000000000004 in IEEE 754 Floting point system
-        Number(alpha.add(beta)).should.equal(gamma);
+    // 0.3 - 0.1 = 0.19999999999999998 in IEEE 754 Floting point system
+    $.is(Number(gamma.subtract(alpha)), beta);
 
-        // 0.3 - 0.1 = 0.19999999999999998 in IEEE 754 Floting point system
-        Number(gamma.subtract(alpha)).should.equal(beta);
+    // 0.1 * 0.2 = 0.020000000000000004 in IEEE 754 Floting point system
+    $.is(Number(alpha.multiply(beta)), 0.02);
 
-        // 0.1 * 0.2 = 0.020000000000000004 in IEEE 754 Floting point system
-        Number(alpha.multiply(beta)).should.equal(0.02);
-
-        // 0.3 / 0.1 = 2.9999999999999996 in IEEE 754 Floting point system
-        Number(gamma.divide(alpha)).should.equal(3);
-    });
+    // 0.3 / 0.1 = 2.9999999999999996 in IEEE 754 Floting point system
+    $.is(Number(gamma.divide(alpha)), 3);
 });

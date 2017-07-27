@@ -1,88 +1,82 @@
-/* eslint-env mocha */
+import test from 'ava';
 
-import should from 'should';
+const enlargement = {
+    status: 'fine',
 
-describe('Core', () => {
-    const enlargement = {
-        status: 'fine',
+    compute(a, b) {
+        return a + b;
+    },
 
-        compute(a, b) {
-            return a + b;
-        },
+    get value() {
+        return 'test';
+    },
 
-        get value() {
-            return 'test';
-        },
+    set value(value) {
+        value.count += 1;
+    },
 
-        set value(value) {
-            value.count += 1;
-        },
+    *range() {
+        yield* [ 1, 2, 3 ];
+    },
 
-        *range() {
-            yield* [ 1, 2, 3 ];
-        },
+    *[Symbol.iterator]() {
+        yield* [ 4, 5, 6 ];
+    }
+};
 
-        *[Symbol.iterator]() {
-            yield* [ 4, 5, 6 ];
-        }
+const assertEnlarged = function assertEnlarged($, enlarged) {
+    $.false(enlarged.propertyIsEnumerable('status'));
+    $.false(enlarged.propertyIsEnumerable('compute'));
+    $.false(enlarged.propertyIsEnumerable('value'));
+    $.is(enlarged.status, 'fine');
+    $.is(enlarged.compute(12, 34), 46);
+    $.is(enlarged.value, 'test');
+
+    const object = { count: 12 };
+
+    enlarged.value = object;
+
+    $.is(object.count, 13);
+    $.deepEqual([ ...enlarged.range() ], [ 1, 2, 3 ]);
+    $.deepEqual([ ...enlarged ], [ 4, 5, 6 ]);
+};
+
+test('ensure existence of functions as non-enumerable property', $ => {
+    $.false(Function.prototype.propertyIsEnumerable('enlarge'));
+    $.false(Function.prototype.propertyIsEnumerable('enhance'));
+    $.false(Object.prototype.propertyIsEnumerable('enlarge'));
+    $.is(typeof Function.prototype.enlarge, 'function');
+    $.is(typeof Function.prototype.enhance, 'function');
+    $.is(typeof Object.prototype.enlarge, 'function');
+});
+
+test('able to enlarge the function in non-enumerable', $ => {
+    const testFunction = function testFunction() {
+
     };
 
-    const assertEnlarged = function assertEnlarged(enlarged) {
-        enlarged.should.have.not.enumerable('status');
-        enlarged.should.have.not.enumerable('compute');
-        enlarged.should.have.not.enumerable('value');
-        enlarged.status.should.equal('fine');
-        enlarged.compute(12, 34).should.equal(46);
-        enlarged.value.should.equal('test');
+    testFunction.enlarge(enlargement);
+    assertEnlarged($, testFunction);
+});
 
-        const object = { count: 12 };
+test('able to enhance the function in non-enumerable', $ => {
+    class TestClass {
 
-        enlarged.value = object;
+    }
 
-        object.count.should.equal(13);
-        [ ...enlarged.range() ].should.deepEqual([ 1, 2, 3 ]);
-        [ ...enlarged ].should.deepEqual([ 4, 5, 6 ]);
-    };
+    TestClass.enhance(enlargement);
+    assertEnlarged($, new TestClass());
+});
 
-    it('should be ensure existence of functions as non-enumerable property', () => {
-        Function.prototype.should.have.not.enumerable('enlarge');
-        Function.prototype.should.have.not.enumerable('enhance');
-        Object.prototype.should.have.not.enumerable('enlarge');
-        Function.prototype.enlarge.should.be.a.Function();
-        Function.prototype.enhance.should.be.a.Function();
-        Object.prototype.enlarge.should.be.a.Function();
-    });
+test('able to enlarge the object in non-enumerable', $ => {
+    const testObject = {};
 
-    it('should be able to enlarge the function in non-enumerable', () => {
-        const testFunction = function testFunction() {
+    testObject.enlarge(enlargement);
+    assertEnlarged($, testObject);
+});
 
-        };
+test('unable to enlage when not an object provided', $ => {
+    const testObject = {};
 
-        testFunction.enlarge(enlargement);
-        assertEnlarged(testFunction);
-    });
-
-    it('should be able to enhance the function in non-enumerable', () => {
-        class TestClass {
-
-        }
-
-        TestClass.enhance(enlargement);
-        assertEnlarged(new TestClass());
-    });
-
-    it('should be able to enlarge the object in non-enumerable', () => {
-        const testObject = {};
-
-        testObject.enlarge(enlargement);
-        assertEnlarged(testObject);
-    });
-
-    it('should be unable to enlage when not an object provided', () => {
-        const testObject = {};
-
-        should.throws(() => {
-            testObject.enlarge('string');
-        }, TypeError);
-    });
+    $.throws(() => testObject.enlarge('string'), TypeError);
 });

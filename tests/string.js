@@ -1,32 +1,28 @@
-/* eslint-env mocha */
+import test from 'ava';
 
-import 'should';
+test('able to replace all target', $ => {
+    $.is('Hello, world!'.replaceAll('l', 'x'), 'Hexxo, worxd!');
+    $.is('Hello, world!'.replaceAll('l', () => 'x'), 'Hexxo, worxd!');
+    $.is('Hello, world!'.replaceAll(/l/, 'x'), 'Hexxo, worxd!');
+    $.is('Hello, world!'.replaceAll(/l/, () => 'x'), 'Hexxo, worxd!');
+});
 
-describe('String', () => {
-    it('should be able to replace all target', () => {
-        'Hello, world!'.replaceAll('l', 'x').should.equal('Hexxo, worxd!');
-        'Hello, world!'.replaceAll('l', () => 'x').should.equal('Hexxo, worxd!');
-        'Hello, world!'.replaceAll(/l/, 'x').should.equal('Hexxo, worxd!');
-        'Hello, world!'.replaceAll(/l/, () => 'x').should.equal('Hexxo, worxd!');
-    });
+test('able to replace in sequently by mapping array', $ => {
+    $.is('Hello, world!'.replaceSequently([ /l/g, 'x' ], [ /x/g, 'l' ]), 'Hello, world!');
+});
 
-    it('should be able to replace in sequently by mapping array', () => {
-        'Hello, world!'.replaceSequently([ /l/g, 'x' ], [ /x/g, 'l' ]).should.equal('Hello, world!');
-    });
+test('able to makes to camelized', $ => {
+    $.is('Hello, world!'.camelized, 'helloWorld');
+});
 
-    it('should be able to makes to camelized', () => {
-        'Hello, world!'.camelized.should.equal('helloWorld');
-    });
+test('able to makes to dasherized', $ => {
+    $.is('Hello, world!'.dasherized, 'hello-world');
+});
 
-    it('should be able to makes to dasherized', () => {
-        'Hello, world!'.dasherized.should.equal('hello-world');
-    });
+test('able to makes to generalized', $ => {
+    $.is('Hello, world!'.generalized, 'Hello world');
+});
 
-    it('should be able to makes to generalized', () => {
-        'Hello, world!'.generalized.should.equal('Hello world');
-    });
-
-    it('should be able to makes to capitalized', () => {
-        'Hello, world!'.capitalized.should.equal('Hello World');
-    });
+test('able to makes to capitalized', $ => {
+    $.is('Hello, world!'.capitalized, 'Hello World');
 });

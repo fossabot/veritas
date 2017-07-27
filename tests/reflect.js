@@ -1,21 +1,20 @@
-/* eslint-env mocha */
+import test from 'ava';
 
-import 'should';
+test('able to get property descriptor inherited by parent', $ => {
+    $.deepEqual(
+        Reflect.getItsPropertyDescriptor([], 'valueOf'),
+        Reflect.getOwnPropertyDescriptor(Object.prototype, 'valueOf')
+    );
+});
 
-describe('Reflect', () => {
-    it('should be able to get property descriptor inherited by parent', () => {
-        Reflect.getItsPropertyDescriptor([], 'valueOf').should.deepEqual(Reflect.getOwnPropertyDescriptor(Object.prototype, 'valueOf'));
-    });
+test('able to get all properties', $ => {
+    const properties = {};
 
-    it('should be able to get all properties', () => {
-        const properties = {};
-
-        for(const prototype of [ Object, Function, Array ].map(constructor => constructor.prototype)) {
-            for(const propertyKey of Reflect.ownKeys(prototype)) {
-                properties[propertyKey] = prototype;
-            }
+    for(const prototype of [ Object, Function, Array ].map(constructor => constructor.prototype)) {
+        for(const propertyKey of Reflect.ownKeys(prototype)) {
+            properties[propertyKey] = prototype;
         }
+    }
 
-        Reflect.itsProperties([]).should.deepEqual(properties);
-    });
+    $.deepEqual(Object.keys(Reflect.itsProperties([])), Object.keys(properties));
 });

@@ -1,54 +1,51 @@
-/* eslint-env mocha */
 /* global Generic Dictionary Type */
 
-import should from 'should';
+import test from 'ava';
 
-describe('Dictionary', () => {
-    let ordinalDictionary;
+let ordinalDictionary;
 
-    it('should be able to construct with type parameters', () => {
-        should.doesNotThrow(() => ordinalDictionary = new (Dictionary.$(Number, String)));
+test('able to construct with type parameters', $ => {
+    $.notThrows(() => ordinalDictionary = new (Dictionary.$(Number, String)));
+});
+
+test('unable to construct without enough type parameters', $ => {
+    $.throws(() => ordinalDictionary = new Dictionary, TypeError);
+    $.throws(() => ordinalDictionary = new (Dictionary.$(Number)), TypeError);
+});
+
+test('both instance and implementation of generic collection', $ => {
+    $.true(Type.of(ordinalDictionary).is(Dictionary));
+    $.true(Type.of(ordinalDictionary).is(Generic.$(2)));
+    $.true(Type.of(ordinalDictionary).is(Dictionary.$(Number, String)));
+    $.false(Type.of(ordinalDictionary).is(Dictionary.$(String, Number)));
+});
+
+test('able to contain correct pair', $ => {
+    $.notThrows(() => {
+        ordinalDictionary.set(1, 'first');
+        ordinalDictionary.set(2, 'second');
+        ordinalDictionary.set(3, 'third');
     });
 
-    it('should be unable to construct without enough type parameters', () => {
-        should.throws(() => ordinalDictionary = new Dictionary, TypeError);
-        should.throws(() => ordinalDictionary = new (Dictionary.$(Number)), TypeError);
-    });
+    $.is(ordinalDictionary.set(4, 'fourth'), ordinalDictionary);
+});
 
-    it('should be both instance and implementation of generic collection', () => {
-        Type.of(ordinalDictionary).is(Dictionary).should.ok();
-        Type.of(ordinalDictionary).is(Generic.$(2)).should.ok();
-        Type.of(ordinalDictionary).is(Dictionary.$(Number, String)).should.ok();
-        Type.of(ordinalDictionary).is(Dictionary.$(String, Number)).should.not.ok();
-    });
+test('unable to contain incorrect pair', $ => {
+    $.throws(() => ordinalDictionary.set(5, 5), TypeError);
+});
 
-    it('should be able to contain correct pair', () => {
-        should.doesNotThrow(() => {
-            ordinalDictionary.set(1, 'first');
-            ordinalDictionary.set(2, 'second');
-            ordinalDictionary.set(3, 'third');
-        });
+test('work fine with prototype functions', $ => {
+    $.is(ordinalDictionary.size, 4);
+    $.is(ordinalDictionary.get(2), 'second');
+    $.true(ordinalDictionary.delete(2));
+    $.false(ordinalDictionary.delete(2));
+    $.false(ordinalDictionary.has(2));
 
-        ordinalDictionary.set(4, 'fourth').should.equal(ordinalDictionary);
-    });
+    const keys = [ ...ordinalDictionary.keys() ];
+    const values = [ ...ordinalDictionary.values() ];
+    const entries = [ ...ordinalDictionary ];
 
-    it('should be unable to contain incorrect pair', () => {
-        should.throws(() => ordinalDictionary.set(5, 5), TypeError);
-    });
-
-    it('should be work fine with prototype functions', () => {
-        ordinalDictionary.size.should.equal(4);
-        ordinalDictionary.get(2).should.equal('second');
-        ordinalDictionary.delete(2).should.ok();
-        ordinalDictionary.delete(2).should.not.ok();
-        ordinalDictionary.has(2).should.not.ok();
-
-        const keys = [ ...ordinalDictionary.keys() ];
-        const values = [ ...ordinalDictionary.values() ];
-        const entries = [ ...ordinalDictionary ];
-
-        keys.should.deepEqual([ 1, 3, 4 ]);
-        values.should.deepEqual([ 'first', 'third', 'fourth' ]);
-        entries.should.deepEqual([ [ 1, 'first' ], [ 3, 'third' ], [ 4, 'fourth' ] ]);
-    });
+    $.deepEqual(keys, [ 1, 3, 4 ]);
+    $.deepEqual(values, [ 'first', 'third', 'fourth' ]);
+    $.deepEqual(entries, [ [ 1, 'first' ], [ 3, 'third' ], [ 4, 'fourth' ] ]);
 });

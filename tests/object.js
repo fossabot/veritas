@@ -1,25 +1,21 @@
-/* eslint-env mocha */
+import test from 'ava';
 
-import should from 'should';
+test('able to freeze an object deeply', $ => {
+    const testObject = {
+        array: [ 1, 2, 3 ],
 
-describe('Object', () => {
-    it('should be able to freeze an object deeply', () => {
-        const testObject = {
-            array: [ 1, 2, 3 ],
+        nested: {
+            array: [ 4, 5, 6 ],
+            string: 'Hello, world!'
+        }
+    };
 
-            nested: {
-                array: [ 4, 5, 6 ],
-                string: 'Hello, world!'
-            }
-        };
+    Object.glaciate(testObject);
 
-        Object.glaciate(testObject);
+    $.throws(() => testObject.array.push(4), TypeError);
+    $.throws(() => testObject.nested.array.push(7), TypeError);
 
-        should.throws(() => testObject.array.push(4), TypeError);
-        should.throws(() => testObject.nested.array.push(7), TypeError);
-
-        should.throws(() => {
-            testObject.nested.string = 'Yeah!';
-        }, TypeError);
-    });
+    $.throws(() => {
+        testObject.nested.string = 'Yeah!';
+    }, TypeError);
 });
