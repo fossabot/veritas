@@ -3,6 +3,7 @@
 [![Build Status][travis-image]][travis-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![Code Climate][codeclimate-image]][codeclimate-url]
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmorrighan%2Fveritas.svg?type=shield)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmorrighan%2Fveritas?ref=badge_shield)
 
 The extension library for pragmatists with elegance.
 
@@ -121,3 +122,6 @@ Veritas is licensed under [LGPL-3.0](LICENSE).
 [coveralls-url]: https://coveralls.io/github/morrighan/veritas?branch=master
 [codeclimate-image]: https://img.shields.io/codeclimate/github/morrighan/veritas.svg
 [codeclimate-url]: https://codeclimate.com/github/morrighan/veritas
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmorrighan%2Fveritas.svg?type=large)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmorrighan%2Fveritas?ref=badge_large)
